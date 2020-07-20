@@ -17,7 +17,7 @@ def create_tcp(request):
         device.description = request.POST['description']
         device.ip = request.POST['ip']
         device.port = request.POST['port']
-        device.slave_id = request.POST['slave']
+        device.subordinate_id = request.POST['subordinate']
         device.gateway_name = GatewayBase.objects.get(gateway_name=request.POST['gateway_name'])
         device.create_time = timezone.datetime.now()
         device.protocol_way = 'TCP'
@@ -32,7 +32,7 @@ def create_rtu(request):
     device = RTU_device()
     try:
         device.device_name = request.POST['name']
-        device.slave_id = request.POST['slave']
+        device.subordinate_id = request.POST['subordinate']
         device.description = request.POST['description']
         device.create_time = timezone.datetime.now()
         device.baud_rate = str(request.POST['baudRate'])
@@ -61,7 +61,7 @@ def get_all(request):
     for i in all_tcp:
         result.append({
             'name': i.device_name,
-            'slave': i.slave_id,
+            'subordinate': i.subordinate_id,
             'description': i.description,
             'protocal': i.protocol_way,
             'create_time': i.create_time.strftime('%Y-%m-%d'),
@@ -70,7 +70,7 @@ def get_all(request):
     for i in all_rtu:
         result.append({
             'name': i.device_name,
-            'slave': i.slave_id,
+            'subordinate': i.subordinate_id,
             'description': i.description,
             'protocal': i.protocol_way,
             'create_time': i.create_time.strftime('%Y-%m-%d'),

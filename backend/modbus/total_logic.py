@@ -36,13 +36,13 @@ def init_dict():
 def modebus_rtu_client(port, baudrate=9600, timeout=6, set_verbose=True):
     global devices_status
     try:
-        master = modbus_rtu.RtuMaster(
+        main = modbus_rtu.RtuMain(
             serial.Serial(port=port, baudrate=baudrate, bytesize=8, parity='N', stopbits=1, xonxoff=0)
         )
-        master.set_timeout(timeout)
+        main.set_timeout(timeout)
         if set_verbose:
-            master.set_verbose(True)
-        master.port = port
+            main.set_verbose(True)
+        main.port = port
     except BaseException as e:
         # 串口不可用
         devices_status[port]['access'] = False
@@ -50,7 +50,7 @@ def modebus_rtu_client(port, baudrate=9600, timeout=6, set_verbose=True):
         return
     devices_status[port]['access'] = True
     Utils.log('连接 {} 成功'.format(port))
-    return master
+    return main
 
 
 def init_send():
@@ -109,10 +109,10 @@ def device_status_handler(port, address, device_name, status_func):
             Utils.log('{}-{}-{} -设备连接断开'.format(port, address, device_name), 'error')
 
 
-def collect_data(master, *args, **kwargs):
+def collect_data(main, *args, **kwargs):
     """modbus-RTU采集+预处理"""
     try:
-        data = master.execute(1, 3, 0, 2, *args, **kwargs)
+        data = main.execute(1, 3, 0, 2, *args, **kwargs)
         data = {
             'temperature': data[0]/10,
              'shidu': data[1]/10
@@ -130,15 +130,15 @@ def error_handler(port, address, device_name):
 def send():
     Utils.log("send start")
     send_data = defaultdict(init_dict)
-    for master in masters:
+    for main in mains:
         ts = Utils.getTS()
-        # 获取此master 对应串口的设备s
-        devices = device_info_map[master.port]
+        # 获取此main 对应串口的设备s
+        devices = device_info_map[main.port]
         for device in devices:
             device_name = device['device_name']
             address = device['address']
             # 采集
-            data = device['collect_func'](master)
+            data = device['collect_func'](main)
             # 组装设备数据结构
             if data:
                 send_data[device_name][0]['ts'] = ts
@@ -146,10 +146,10 @@ def send():
                 status = device_connection
             else:
                 # 异常常处理
-                error_handler(master.port, address, device_name)
+                error_handler(main.port, address, device_name)
                 status = device_disconnection
             # 维护设备状态
-            device_status_handler(master.port, address, device_name, status)
+            device_status_handler(main.port, address, device_name, status)
     if send_data.keys():
         # mqtt发送数据
         tb_client.SendTelemetry(data, True)
@@ -179,7 +179,7 @@ if __name__ == '__main__':
         ],
     }
 
-    masters = [modebus_rtu_client(i) for i in device_info_map.keys()]
+    mains = [modebus_rtu_client(i) for i in device_info_map.keys()]
     print(devices_status)
     init_send()
     schedule.every(3).seconds.do(send)

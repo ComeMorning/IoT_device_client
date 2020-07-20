@@ -72,7 +72,7 @@ def add_record(request):
     function_name = request.POST['function_name'].split(',')
     identifier = request.POST['identifier'].split(',')
     gateway = GatewayBase.objects.get(gateway_name=request.POST['gateway'])
-    slave_id = int(request.POST['slave_id'])
+    subordinate_id = int(request.POST['subordinate_id'])
 
     modbus_function_code = request.POST['modbus_function_code']
     data_length = request.POST['data_length']
@@ -85,7 +85,7 @@ def add_record(request):
     for i in range(record_count):
         TaskRecord.objects.create(
             gateway=gateway,
-            slave_id=slave_id,
+            subordinate_id=subordinate_id,
             function_name=function_name[i],
             identifier=identifier[i],
             modbus_function_code=modbus_function_code,
@@ -116,7 +116,7 @@ def get_all_record(request):
     result = []
     for i in all_record:
         result.append({
-            'slave_id': i.slave_id,
+            'subordinate_id': i.subordinate_id,
             'modbus_function_code': i.modbus_function_code,
             "start_address": i.start_address,
             'identifier': i.identifier,
@@ -131,9 +131,9 @@ def get_all_record(request):
 
 def delete_record(request):
     try:
-        slave_id = request.POST['slave_id']
+        subordinate_id = request.POST['subordinate_id']
         start_address = request.POST['start_address']
-        TaskRecord.objects.filter(slave_id=slave_id, start_address=start_address).delete()
+        TaskRecord.objects.filter(subordinate_id=subordinate_id, start_address=start_address).delete()
         return HttpResponse(json.dumps({'msg': 'ok'}), content_type='application/json')
     except Exception as e:
         print(e)
@@ -142,9 +142,9 @@ def delete_record(request):
 
 def change_status(request):
     try:
-        slave_id = request.POST['slave_id']
+        subordinate_id = request.POST['subordinate_id']
         start_address = request.POST['start_address']
-        record = TaskRecord.objects.get(slave_id=slave_id, start_address=start_address)
+        record = TaskRecord.objects.get(subordinate_id=subordinate_id, start_address=start_address)
         if record.active_status:
             record.active_status = False
         else:
