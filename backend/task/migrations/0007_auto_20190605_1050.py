@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='devicetask',
-            name='slave_id',
+            name='subordinate_id',
             field=models.IntegerField(default=1, verbose_name='设备地址'),
         ),
     ]

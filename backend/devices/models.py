@@ -5,7 +5,7 @@ from gateway.models import GatewayBase
 
 class TCP_device(models.Model):
     device_name = models.CharField(max_length=20, null=False)
-    slave_id = models.IntegerField(null=False)
+    subordinate_id = models.IntegerField(null=False)
     description = models.TextField(max_length=200, default='', verbose_name='设备描述')
     create_time = models.DateField(null=False)
     protocol_way = models.CharField(max_length=3, null=False, verbose_name='设备接入方式')
@@ -16,7 +16,7 @@ class TCP_device(models.Model):
 
 class RTU_device(models.Model):
     device_name = models.CharField(max_length=20, null=False)
-    slave_id = models.IntegerField(null=False)
+    subordinate_id = models.IntegerField(null=False)
     description = models.TextField(max_length=200, default='', verbose_name='设备描述')
     create_time = models.DateField(null=False)
     baud_rate = models.IntegerField(null=False, default=9600)
