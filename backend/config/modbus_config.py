@@ -12,7 +12,7 @@ configs = {
     "MODBUS_SLAVE_CONNECT": {
         "host": "192.168.9.101",
         "port": 502,
-        "slave_id": 1
+        "subordinate_id": 1
     },
     "MODBUS_PROTOCOL_ADDRESS": {
         "telemetry_start_address": 0,

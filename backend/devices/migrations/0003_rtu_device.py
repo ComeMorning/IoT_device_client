@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('device_name', models.CharField(max_length=20)),
-                ('slave_id', models.IntegerField()),
+                ('subordinate_id', models.IntegerField()),
                 ('description', models.TextField(default='', max_length=200, verbose_name='设备描述')),
                 ('create_time', models.DateField()),
                 ('baud_rate', models.IntegerField(default=9600)),

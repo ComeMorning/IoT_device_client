@@ -42,14 +42,14 @@ def get_com_devices():
     return port_list_name
 
 
-def create_master(port):
+def create_main(port):
     try:
-        master = modbus_rtu.RtuMaster(
+        main = modbus_rtu.RtuMain(
             serial.Serial(port=port, baudrate=9600, bytesize=8, parity='N', stopbits=1, xonxoff=0)
         )
-        master.port = port
-        master.set_timeout(2.0)
-        return master
+        main.port = port
+        main.set_timeout(2.0)
+        return main
     except SerialException as e:
         Utils.log(e, 'error')
 
@@ -62,18 +62,18 @@ def match_port(config, com=False, usb=False):
     print('ports:', ports)
     if not ports:
         return
-    masters = [master for master in [create_master(port) for port in ports] if master]
+    mains = [main for main in [create_main(port) for port in ports] if main]
 
     for device in sorted_conf:
-        for master in masters:
+        for main in mains:
             try:
-                Utils.log(master.execute(device[1], device[2], device[3], device[4]-device[3]))
+                Utils.log(main.execute(device[1], device[2], device[3], device[4]-device[3]))
             except Exception as e:
                 pass
             else:
                 # 打印设备与串口对应信息
-                print(device[0], '>>>>', master.port)
-                masters.remove(master)
+                print(device[0], '>>>>', main.port)
+                mains.remove(main)
                 break
 
 

@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='devicetask',
-            name='slave_id',
+            name='subordinate_id',
             field=models.IntegerField(default=1),
         ),
     ]

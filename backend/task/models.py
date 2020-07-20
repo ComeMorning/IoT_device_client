@@ -20,7 +20,7 @@ class TaskRecord(models.Model):
         ("time", u"定时上报")
     )
     gateway = models.ForeignKey(GatewayBase, on_delete=models.CASCADE, to_field='gateway_name')
-    slave_id = models.IntegerField(null=False, default=1, verbose_name='设备地址')
+    subordinate_id = models.IntegerField(null=False, default=1, verbose_name='设备地址')
     function_name = models.CharField(max_length=20, null=True, verbose_name='功能名称')
     identifier = models.CharField(max_length=10, verbose_name='标识符')
     modbus_function_code = models.IntegerField(null=False, verbose_name='modbus功能码')
